@@ -1,7 +1,7 @@
 require_relative '../lib/dice_set'
 
 describe DiceSet do
-  it 'can create a dice set' do
+  it 'creates a dice set' do
     expect(subject).not_to be_nil
   end
 
