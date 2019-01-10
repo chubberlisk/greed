@@ -6,6 +6,18 @@ describe Game do
     expect(subject).not_to be_nil
   end
 
+  describe '#main' do
+    before do
+      allow(STDOUT).to receive(:write)
+      allow(STDIN).to receive(:gets).and_return(2)
+      subject.main
+    end
+
+    it 'creates number of players based on user input' do
+      expect(subject.players.size).to eq(2)
+    end
+  end
+
   describe '#players' do
     let(:players) { [Player.new, Player.new] }
 
