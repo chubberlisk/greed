@@ -22,7 +22,7 @@ describe DiceSet do
       expect(first_time).to eq(second_time)
     end
 
-    it 'can roll different numbers of dice', skip_before: true do
+    it 'can roll different numbers of dice' do
       subject.roll(3)
       expect(subject.values.size).to eq(3)
       subject.roll(1)
