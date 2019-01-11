@@ -10,20 +10,30 @@ class Game
   end
 
   def main
+    step_0_intro
+    step_1_num_of_players until @players.size >= 2
+  end
+
+  private
+
+  def ask(question)
+    puts question
+    print '> '
+    STDIN.gets
+  end
+
+  def step_0_intro
     puts '=' * 80
     puts 'Greed'
     puts '=' * 80
-    valid_num_of_players = false
-    while !valid_num_of_players
-      puts 'How many players?'
-      print '> '
-      num_of_players = STDIN.gets.to_i
-      if (2..6).include?(num_of_players)
-        num_of_players.times { @players.push(Player.new) }
-        valid_num_of_players = true
-      else
-        puts "Please enter a number between 2 and 6.\n\n"
-      end
+  end
+
+  def step_1_num_of_players
+    num_of_players = ask('How many players?').to_i
+    if num_of_players.between?(2, 6)
+      num_of_players.times { @players.push(Player.new) }
+    else
+      puts "Please enter a number between 2 and 6.\n\n"
     end
   end
 end
