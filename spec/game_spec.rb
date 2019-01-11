@@ -7,14 +7,39 @@ describe Game do
   end
 
   describe '#main' do
-    before do
-      allow(STDOUT).to receive(:write)
-      allow(STDIN).to receive(:gets).and_return(2)
-      subject.main
-    end
-
-    it 'creates number of players based on user input' do
-      expect(subject.players.size).to eq(2)
+    before { allow(STDOUT).to receive(:write) }  # suppress output
+    
+    context 'entering the number of players' do
+      it 'creates number of players based on user input' do
+        allow(STDIN).to receive(:gets).and_return(2)
+        subject.main
+        expect(subject.players.size).to eq(2)
+      end
+  
+      it 'allows the number of players to be 2' do
+        allow(STDIN).to receive(:gets).and_return(2)
+        subject.main
+        expect(subject.players.size).to eq(2)
+      end
+  
+      it 'allows the number of players to be between 2 and 6' do
+        num_of_players = rand(2..6)
+        allow(STDIN).to receive(:gets).and_return(num_of_players)
+        subject.main
+        expect(subject.players.size).to eq(num_of_players)
+      end
+  
+      it 'does not allow the number of players to be 1' do
+        allow(STDIN).to receive(:gets).and_return(1, 2)
+        subject.main
+        expect(subject.players.size).not_to eq(1)
+      end
+  
+      it 'does not allow the number of players to be a string' do
+        allow(STDIN).to receive(:gets).and_return("hi", 2)
+        subject.main
+        expect(subject.players.size).not_to eq(0)
+      end
     end
   end
 
