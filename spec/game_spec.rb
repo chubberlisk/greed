@@ -10,7 +10,7 @@ describe Game do
     before { allow(STDOUT).to receive(:write) }  # suppress output
     
     context 'entering the number of players' do
-      it 'creates number of players based on user input' do
+      it 'creates the number of players based on user input' do
         allow(STDIN).to receive(:gets).and_return(2)
         subject.main
         expect(subject.players.size).to eq(2)
@@ -41,10 +41,30 @@ describe Game do
         expect(subject.players.size).not_to eq(0)
       end
     end
+
+    context 'getting into the game' do
+      it 'requires a player to get 300 or more points' do
+        dice_set = instance_double('DiceSet', values: [3, 3, 3, 4, 6], score: rand(300..1000))
+        allow(dice_set).to receive(:roll).and_return(dice_set.values)
+        allow(DiceSet).to receive(:new).and_return(dice_set)
+        allow(STDIN).to receive(:gets).and_return(2)
+        subject.main
+        expect(subject.players.first.in_the_game?).to be_truthy
+      end
+
+      it 'does not allow a player with less than 300 points' do
+        dice_set = instance_double('DiceSet', values: [2, 3, 4, 5, 6], score: rand(0...300))
+        allow(dice_set).to receive(:roll).and_return(dice_set.values)
+        allow(DiceSet).to receive(:new).and_return(dice_set)
+        allow(STDIN).to receive(:gets).and_return(2)
+        subject.main
+        expect(subject.players.first.in_the_game?).to be_falsey
+      end
+    end
   end
 
   describe '#players' do
-    let(:players) { [Player.new, Player.new] }
+    let(:players) { [Player.new(1), Player.new(2)] }
 
     before { subject.instance_variable_set(:@players, players) }
 
@@ -64,6 +84,41 @@ describe Game do
 
     it 'returns false when initialised' do
       expect(subject.end_game).to be(false)
+    end
+  end
+
+  describe '#turn' do
+    it 'returns 1 when initialised' do
+      expect(subject.turn).to eq(1)
+    end
+  end
+
+  describe '#turn_player' do
+    let(:players) { [Player.new(1), Player.new(2)] }
+
+    before { subject.instance_variable_set(:@players, players) }
+
+    it 'returns the first player for the first turn' do
+      expect(subject.turn_player).to eq(players[0])
+    end
+
+    it 'returns the second player for the second turn' do
+      subject.instance_variable_set(:@turn, 2)
+      expect(subject.turn_player).to eq(players[1])
+    end
+  end
+
+  describe '#players_in_the_game' do
+    it 'returns an empty list when initialised' do
+      expect(subject.players_in_the_game).to eq([])
+    end
+
+    it 'returns an array of player objects that are in the game' do
+      player_in_the_game = Player.new(1)
+      player_in_the_game.instance_variable_set(:@in_the_game, player_in_the_game)
+      players = [player_in_the_game, Player.new(2), Player.new(3)]
+      subject.instance_variable_set(:@players, players)
+      expect(subject.players_in_the_game).to eq([player_in_the_game])
     end
   end
 end
