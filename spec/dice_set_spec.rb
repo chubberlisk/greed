@@ -95,6 +95,9 @@ describe DiceSet do
     end
 
     it 'assigns value to @num_of_non_scoring' do
+      subject.instance_variable_set(:@values, [2, 3, 4, 4, 6])
+      subject.score
+      expect(subject.num_of_non_scoring).to eq(5)
       subject.instance_variable_set(:@values, [5, 1, 3, 4, 1])
       subject.score
       expect(subject.num_of_non_scoring).to eq(2)
@@ -104,6 +107,9 @@ describe DiceSet do
       subject.instance_variable_set(:@values, [2, 4, 4, 5, 4])
       subject.score
       expect(subject.num_of_non_scoring).to eq(1)
+      subject.instance_variable_set(:@values, [1, 1, 1, 1, 1])
+      subject.score
+      expect(subject.num_of_non_scoring).to eq(0)
     end
   end
 end
