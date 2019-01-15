@@ -1,4 +1,3 @@
-require_relative './player'
 require_relative './dice_set'
 
 class Turn
@@ -46,5 +45,3 @@ class Turn
     STDIN.gets.chomp
   end
 end
-
-# Turn.new(Player.new(1)).main
