@@ -1,6 +1,7 @@
 class Player
   attr_reader :number
   attr_reader :points
+  attr_writer :in_the_game
 
   def initialize(number)
     @number = number
