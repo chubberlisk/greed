@@ -39,4 +39,6 @@ describe Player do
       expect(subject.in_the_game?).to be_truthy
     end
   end
+
+  it { expect(subject).to respond_to(:in_the_game=) }
 end
