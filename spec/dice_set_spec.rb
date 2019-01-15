@@ -94,22 +94,22 @@ describe DiceSet do
       expect(subject.values).to match_array(values)
     end
 
-    it 'assigns value to @num_of_non_scoring' do
+    it 'assigns value to @num_of_available_dice' do
       subject.instance_variable_set(:@values, [2, 3, 4, 4, 6])
       subject.score
-      expect(subject.num_of_non_scoring).to eq(5)
+      expect(subject.num_of_available_dice).to eq(0)
       subject.instance_variable_set(:@values, [5, 1, 3, 4, 1])
       subject.score
-      expect(subject.num_of_non_scoring).to eq(2)
+      expect(subject.num_of_available_dice).to eq(2)
       subject.instance_variable_set(:@values, [1, 1, 1, 3, 1])
       subject.score
-      expect(subject.num_of_non_scoring).to eq(1)
+      expect(subject.num_of_available_dice).to eq(1)
       subject.instance_variable_set(:@values, [2, 4, 4, 5, 4])
       subject.score
-      expect(subject.num_of_non_scoring).to eq(1)
+      expect(subject.num_of_available_dice).to eq(1)
       subject.instance_variable_set(:@values, [1, 1, 1, 1, 1])
       subject.score
-      expect(subject.num_of_non_scoring).to eq(0)
+      expect(subject.num_of_available_dice).to eq(5)
     end
   end
 end
