@@ -1,6 +1,6 @@
 class DiceSet
   attr_reader :values
-  attr_reader :num_of_non_scoring
+  attr_reader :num_of_available_dice
 
   def roll(times)
     @values = (0...times).map { rand(1..6) }
@@ -22,7 +22,15 @@ class DiceSet
         score[:dice] += 1
       end
     end
-    @num_of_non_scoring = @values.size - score[:dice]
+    num_of_non_scoring = @values.size - score[:dice]
+    case num_of_non_scoring
+    when 0
+      @num_of_available_dice = 5
+    when 5
+      @num_of_available_dice = 0
+    else
+      @num_of_available_dice = num_of_non_scoring
+    end
     score[:val]
   end
 end
