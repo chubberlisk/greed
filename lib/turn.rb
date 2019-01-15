@@ -1,4 +1,4 @@
-# require_relative './player'
+require_relative './player'
 require_relative './dice_set'
 
 class Turn
@@ -23,10 +23,27 @@ class Turn
       @player.in_the_game = true
       puts "\nYou are now in the game!"
       puts "You have accumulated #{@accumulated_score} points this turn."
+      ans = ask("\nRoll again with #{dice_set.num_of_available_dice} dice? (y/n)")
+      if ['y', 'Y', 'yes', 'YES'].include?(ans)
+        dice_set.roll(dice_set.num_of_available_dice)
+        puts "\nYou rolled #{dice_set.values} with a score of #{dice_set.score}."
+      else
+        @player.points += @accumulated_score
+        puts "\nAdding your accumulated score to your points."
+        puts "You now have #{@player.points} points!"
+      end
     else
       puts "\nUnlucky, you\'re still not in the game."
     end
     puts '=' * 6
+  end
+
+  private
+
+  def ask(question)
+    puts question
+    print '> '
+    STDIN.gets.chomp
   end
 end
 
