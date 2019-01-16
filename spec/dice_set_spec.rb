@@ -1,115 +1,114 @@
 require_relative '../lib/dice_set'
 
 describe DiceSet do
-  it 'creates a dice set' do
-    expect(subject).not_to be_nil
-  end
+  before { allow(STDOUT).to receive(:write) }  # suppress output
 
-  describe '#roll' do
-    before { subject.roll(5) }
-
-    it 'returns an array' do
-      expect(subject.values).to be_kind_of(Array)
+  describe '.roll' do
+    it 'returns two values' do
+      expect(DiceSet.roll(5).size).to eq(2) 
     end
 
-    it 'returns an set of integers between 1 and 6' do
-      subject.values.each { |value| expect(value).to be_between(1, 6) }
+    it 'returns two integers' do
+      DiceSet.roll(5).each { |value| expect(value).to be_kind_of(Integer) }
     end
 
-    it 'dice values do not change unless explicitly rolled' do
-      first_time = subject.values
-      second_time = subject.values
-      expect(first_time).to eq(second_time)
-    end
-
-    it 'can roll different numbers of dice' do
-      subject.roll(3)
-      expect(subject.values.size).to eq(3)
-      subject.roll(1)
-      expect(subject.values.size).to eq(1)
+    it 'rolls different number of dice' do
+      DiceSet.roll(3)
+      expect(DiceSet.instance_variable_get(:@values).size).to eq(3)
+      DiceSet.roll(1)
+      expect(DiceSet.instance_variable_get(:@values).size).to eq(1)
     end
   end
 
-  describe '#score' do
+  describe '.score' do
     it 'returns 0 when values is an empty list' do
-      subject.instance_variable_set(:@values, [])
-      expect(subject.score).to eq(0)
+      DiceSet.instance_variable_set(:@values, [])
+      expect(DiceSet.score[:val]).to eq(0)
     end
 
     it 'returns 50 for a single roll of 5' do
-      subject.instance_variable_set(:@values, [5])
-      expect(subject.score).to eq(50)
+      DiceSet.instance_variable_set(:@values, [5])
+      expect(DiceSet.score[:val]).to eq(50)
     end
 
     it 'returns 100 for a single roll of 1' do
-      subject.instance_variable_set(:@values, [1])
-      expect(subject.score).to eq(100)
+      DiceSet.instance_variable_set(:@values, [1])
+      expect(DiceSet.score[:val]).to eq(100)
     end
 
     it 'returns sum of individual scores for multiple 1s and 5s' do
-      subject.instance_variable_set(:@values, [1, 5, 5, 1])
-      expect(subject.score).to eq(300)
+      DiceSet.instance_variable_set(:@values, [1, 5, 5, 1])
+      expect(DiceSet.score[:val]).to eq(300)
     end
 
     it 'returns 0 for single 2s, 3s, 4s, and 6s' do
-      subject.instance_variable_set(:@values, [2, 3, 4, 6])
-      expect(subject.score).to eq(0)
+      DiceSet.instance_variable_set(:@values, [2, 3, 4, 6])
+      expect(DiceSet.score[:val]).to eq(0)
     end
 
     it 'returns 1000 for a triple 1' do
-      subject.instance_variable_set(:@values, [1, 1, 1])
-      expect(subject.score).to eq(1000)
+      DiceSet.instance_variable_set(:@values, [1, 1, 1])
+      expect(DiceSet.score[:val]).to eq(1000)
     end
 
     it 'returns 100x for other triples' do
-      subject.instance_variable_set(:@values, [2, 2, 2])
-      expect(subject.score).to eq(200)
-      subject.instance_variable_set(:@values, [3, 3, 3])
-      expect(subject.score).to eq(300)
-      subject.instance_variable_set(:@values, [4, 4, 4])
-      expect(subject.score).to eq(400)
-      subject.instance_variable_set(:@values, [5, 5, 5])
-      expect(subject.score).to eq(500)
-      subject.instance_variable_set(:@values, [6, 6, 6])
-      expect(subject.score).to eq(600)
+      DiceSet.instance_variable_set(:@values, [2, 2, 2])
+      expect(DiceSet.score[:val]).to eq(200)
+      DiceSet.instance_variable_set(:@values, [3, 3, 3])
+      expect(DiceSet.score[:val]).to eq(300)
+      DiceSet.instance_variable_set(:@values, [4, 4, 4])
+      expect(DiceSet.score[:val]).to eq(400)
+      DiceSet.instance_variable_set(:@values, [5, 5, 5])
+      expect(DiceSet.score[:val]).to eq(500)
+      DiceSet.instance_variable_set(:@values, [6, 6, 6])
+      expect(DiceSet.score[:val]).to eq(600)
     end
 
     it 'returns sum for mixed rolls' do
-      subject.instance_variable_set(:@values, [2, 5, 2, 2, 3])
-      expect(subject.score).to eq(250)
-      subject.instance_variable_set(:@values, [5, 5, 5, 5])
-      expect(subject.score).to eq(550)
-      subject.instance_variable_set(:@values, [1, 1, 1, 1])
-      expect(subject.score).to eq(1100)
-      subject.instance_variable_set(:@values, [1, 1, 1, 1, 1])
-      expect(subject.score).to eq(1200)
-      subject.instance_variable_set(:@values, [1, 1, 1, 5, 1])
-      expect(subject.score).to eq(1150)
+      DiceSet.instance_variable_set(:@values, [2, 5, 2, 2, 3])
+      expect(DiceSet.score[:val]).to eq(250)
+      DiceSet.instance_variable_set(:@values, [5, 5, 5, 5])
+      expect(DiceSet.score[:val]).to eq(550)
+      DiceSet.instance_variable_set(:@values, [1, 1, 1, 1])
+      expect(DiceSet.score[:val]).to eq(1100)
+      DiceSet.instance_variable_set(:@values, [1, 1, 1, 1, 1])
+      expect(DiceSet.score[:val]).to eq(1200)
+      DiceSet.instance_variable_set(:@values, [1, 1, 1, 5, 1])
+      expect(DiceSet.score[:val]).to eq(1150)
     end
 
     it 'does not affect @values' do
       values = [1, 1, 1, 1]
-      subject.instance_variable_set(:@values, values)
-      subject.score
-      expect(subject.values).to match_array(values)
+      DiceSet.instance_variable_set(:@values, values)
+      DiceSet.score
+      expect(DiceSet.instance_variable_get(:@values)).to match_array(values)
+    end
+  end
+
+  describe '.num_of_available_dice' do
+    it 'returns 0 when all non-scoring dice' do
+      DiceSet.instance_variable_set(:@values, [2, 3, 4, 4, 6])
+      expect(DiceSet.num_of_available_dice).to eq(0)
     end
 
-    it 'assigns value to @num_of_available_dice' do
-      subject.instance_variable_set(:@values, [2, 3, 4, 4, 6])
-      subject.score
-      expect(subject.num_of_available_dice).to eq(0)
-      subject.instance_variable_set(:@values, [5, 1, 3, 4, 1])
-      subject.score
-      expect(subject.num_of_available_dice).to eq(2)
-      subject.instance_variable_set(:@values, [1, 1, 1, 3, 1])
-      subject.score
-      expect(subject.num_of_available_dice).to eq(1)
-      subject.instance_variable_set(:@values, [2, 4, 4, 5, 4])
-      subject.score
-      expect(subject.num_of_available_dice).to eq(1)
-      subject.instance_variable_set(:@values, [1, 1, 1, 1, 1])
-      subject.score
-      expect(subject.num_of_available_dice).to eq(5)
+    it 'returns 2 when 2 non-scoring dice' do
+      DiceSet.instance_variable_set(:@values, [5, 1, 3, 4, 1])
+      expect(DiceSet.num_of_available_dice).to eq(2)
+    end
+
+    it 'returns 1 when 1 non-scoring dice' do
+      DiceSet.instance_variable_set(:@values, [1, 1, 1, 3, 1])
+      expect(DiceSet.num_of_available_dice).to eq(1)
+    end
+
+    it 'returns 5 when all 5 scoring dice' do
+      DiceSet.instance_variable_set(:@values, [1, 1, 1, 1, 1])
+      expect(DiceSet.num_of_available_dice).to eq(5)
+    end
+
+    it 'returns 5 when all 3 scoring dice' do
+      DiceSet.instance_variable_set(:@values, [1, 1, 1])
+      expect(DiceSet.num_of_available_dice).to eq(5)
     end
   end
 end
