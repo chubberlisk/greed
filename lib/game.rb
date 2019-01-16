@@ -1,4 +1,5 @@
 require_relative './turn'
+require_relative './player'
 
 class Game
   attr_reader :players
