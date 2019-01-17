@@ -1,3 +1,4 @@
+require_relative './helper'
 require_relative './turn'
 require_relative './player'
 
@@ -27,12 +28,6 @@ class Game
   end
 
   private
-
-  def ask(question)
-    puts question
-    print '> '
-    STDIN.gets.chomp
-  end
 
   def step_0_intro
     puts '=' * 80
