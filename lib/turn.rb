@@ -10,7 +10,7 @@ class Turn
   end
 
   def main
-    puts '=' * 6
+    puts "\n" + '=' * 6
     puts "Current Turn: Player #{player.number}"
     player.in_the_game? ? normal(5) : get_in_the_game
     puts '=' * 6
@@ -20,7 +20,7 @@ class Turn
 
   def get_in_the_game
     puts "Player #{player.number} is not in the game."
-    puts "You must get at least 300 points in this turn to get into the game.\n"
+    puts "You must get at least 300 points in this turn to get into the game."
     score, num_of_available_dice = DiceSet.roll(5)
     if score >= 300
       accumulate_score_and_continue(score, num_of_available_dice)
@@ -48,7 +48,7 @@ class Turn
 
   def add_accumulated_score_to_player_points
     @player.points += @accumulated_score
-    if !@player.in_the_game?
+    unless @player.in_the_game?
       @player.in_the_game = true
       puts "\nYou are now in the game!"
     end
