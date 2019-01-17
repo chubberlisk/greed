@@ -4,24 +4,17 @@ require_relative './player'
 
 class Game
   attr_reader :players
-  attr_reader :turn
-  attr_reader :end_game
 
   def initialize
     @players = []
-    @turn = 1
+    @final_round = false
     @end_game = false
   end
 
   def main
     step_0_intro
     step_1_num_of_players until @players.size >= 2
-    @players.each do |player|
-      Turn.new(player).main
-      @end_game = true if @players.any? { |player| player.points >= 3000 }
-      ans = ask("\nPress y to continue.")
-      break unless ['y', 'Y'].include?(ans)
-    end
+    step_2_turns until @end_game
     step_3_game_over
   end
 
@@ -29,8 +22,16 @@ class Game
     @players.select { |player| player.in_the_game? }
   end
 
-  def turn_player
-    @players.find { |player| player.number == turn }
+  def final_round?
+    @final_round
+  end
+
+  def end_game?
+    @end_game
+  end
+
+  def highest_scorer
+    @players.max { |player| player.points }
   end
 
   private
@@ -50,9 +51,26 @@ class Game
     end
   end
 
+  def step_2_turns
+    @players.each do |player|
+      unless player.final_turn?
+        Turn.new(player).main
+        @final_round = true if player.final_turn?
+        player.final_turn = true if @final_round
+        @end_game = true if @players.all? { |player| player.final_turn? }
+        ans = ask("\nPress any key to continue or (n/q) to stop.")
+        if ['n', 'N', 'q', 'Q'].include?(ans)
+          @end_game = true
+          break
+        end
+      end
+    end
+  end
+
   def step_3_game_over
     puts "\n" + '=' * 80
     puts "GAME OVER!"
+    puts "\nThe winner is Player #{highest_scorer.number}!"
     puts "\nEach player scored:"
     @players.each do |player|
       puts " - Player #{player.number}: #{player.points} points"
