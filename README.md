@@ -7,4 +7,5 @@ A program that will play the Greed Game. The rules are taken from [Ruby koans](h
 ## Usage
 
 1. Clone Git repository using `git clone https://github.com/chubberlisk/greed.git`
-2. Run program using `ruby greed.rb`
+2. Move into `greed` directory using `cd greed`
+3. Run program using `ruby greed.rb`
