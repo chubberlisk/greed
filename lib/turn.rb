@@ -1,3 +1,4 @@
+require_relative './helper'
 require_relative './dice_set'
 
 class Turn
@@ -22,8 +23,7 @@ class Turn
     puts "You must get at least 300 points in this turn to get into the game.\n"
     score, num_of_available_dice = DiceSet.roll(5)
     if score >= 300
-      accumulate_score(score)
-      continue(num_of_available_dice)
+      accumulate_score_and_continue(score, num_of_available_dice)
     else
       puts "\nUnlucky, you\'re still not in the game."
     end
@@ -32,17 +32,18 @@ class Turn
   def normal(num_of_dice)
     score, num_of_available_dice = DiceSet.roll(num_of_dice)
     if score > 0
-      accumulate_score(score)
-      continue(num_of_available_dice)
+      accumulate_score_and_continue(score, num_of_available_dice)
     else
       puts "\nOh no! You've scored 0 points. You've lost your turn and accumulated score."
       puts "You currently have #{@player.points} points."
     end
   end
 
-  def accumulate_score(score)
+  def accumulate_score_and_continue(score, num_of_available_dice)
     @accumulated_score += score 
     puts "You have accumulated #{@accumulated_score} points this turn."
+    ans = ask("\nRoll again with #{num_of_available_dice} dice? (y/n)")
+    ['y', 'Y'].include?(ans) ? normal(num_of_available_dice) : add_accumulated_score_to_player_points
   end
 
   def add_accumulated_score_to_player_points
@@ -53,16 +54,5 @@ class Turn
     end
     puts "\nAdding your accumulated score to your points."
     puts "You now have #{@player.points} points!"
-  end
-
-  def continue(num_of_available_dice)
-    ans = ask("\nRoll again with #{num_of_available_dice} dice? (y/n)")
-    ['y', 'Y'].include?(ans) ? normal(num_of_available_dice) : add_accumulated_score_to_player_points
-  end
-
-  def ask(question)
-    puts question
-    print '> '
-    STDIN.gets.chomp
   end
 end
