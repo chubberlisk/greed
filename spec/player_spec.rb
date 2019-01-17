@@ -41,4 +41,22 @@ describe Player do
   end
 
   it { expect(subject).to respond_to(:in_the_game=) }
+
+  describe '#final_turn?' do
+    it 'returns false when initialised' do
+      expect(subject.final_turn?).to be_falsey
+    end
+
+    it 'returns true when their points is equal to 3000' do
+      subject.points = 3000
+      expect(subject.final_turn?).to be_truthy
+    end
+
+    it 'returns true when their points is more than 3000' do
+      subject.points = rand(3000..5000)
+      expect(subject.final_turn?).to be_truthy
+    end
+  end
+
+  it { expect(subject).to respond_to(:final_turn=) }
 end
