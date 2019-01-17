@@ -19,12 +19,6 @@ describe Game do
         expect(subject.players.size).to eq(2)
       end
   
-      it 'allows the number of players to be 2' do
-        allow(STDIN).to receive(:gets).and_return('2')
-        subject.main
-        expect(subject.players.size).to eq(2)
-      end
-  
       it 'allows the number of players to be between 2 and 6' do
         num_of_players = rand(2..6)
         allow(STDIN).to receive(:gets).and_return(num_of_players.to_s)
@@ -52,6 +46,36 @@ describe Game do
         expect(Turn).to receive(:new).and_return(turn).at_least(:once)
         expect(turn).to receive(:main).at_least(:once)
         subject.main
+      end
+
+      it 'moves onto the next player after a turn' do
+        turn = instance_double('Turn')
+        allow(STDIN).to receive(:gets).and_return('2', 'y')
+        expect(Turn).to receive(:new).and_return(turn).twice
+        expect(turn).to receive(:main).twice
+        subject.main
+      end
+
+      it 'asks player to continue after a turn' do
+        turn = instance_double('Turn')
+        allow(turn).to receive(:main)
+        allow(Turn).to receive(:new).and_return(turn)
+        allow(STDIN).to receive(:gets).and_return('2', 'y')
+        expect(STDIN).to receive(:gets).at_least(:twice)
+        subject.main
+      end
+
+      it 'makes @end_game true when a player reaches 3000 or more points' do
+        turn = instance_double('Turn')
+        allow(turn).to receive(:main)
+        allow(Turn).to receive(:new).and_return(turn)
+        allow(STDIN).to receive(:gets).and_return('2')
+        player = Player.new(1)
+        player.points = rand(3000..5000)
+        players = [player, Player.new(2)]
+        subject.instance_variable_set(:@players, players)
+        subject.main
+        expect(subject.end_game).to be_truthy
       end
     end
   end
