@@ -16,7 +16,13 @@ class Game
   def main
     step_0_intro
     step_1_num_of_players until @players.size >= 2
-    Turn.new(@players.first).main
+    @players.each do |player|
+      Turn.new(player).main
+      @end_game = true if @players.any? { |player| player.points >= 3000 }
+      ans = ask("\nPress y to continue.")
+      break unless ['y', 'Y'].include?(ans)
+    end
+    step_3_game_over
   end
 
   def players_in_the_game
@@ -40,8 +46,17 @@ class Game
     if num_of_players.between?(2, 6)
       num_of_players.times { |i| @players.push(Player.new(i + 1)) }
     else
-      puts "Please enter a number between 2 and 6.\n"
+      puts "\nPlease enter a number between 2 and 6."
     end
-    puts
+  end
+
+  def step_3_game_over
+    puts "\n" + '=' * 80
+    puts "GAME OVER!"
+    puts "\nEach player scored:"
+    @players.each do |player|
+      puts " - Player #{player.number}: #{player.points} points"
+    end
+    puts '=' * 80
   end
 end
