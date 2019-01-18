@@ -27,7 +27,7 @@ class Game
   end
 
   def highest_scorer
-    @players.max { |player| player.points }
+    @players.max_by { |player| player.points }
   end
 
   private
@@ -50,6 +50,7 @@ class Game
   def step_2_turns
     @players.each do |player|
       next if player.final_turn?
+      puts "\n Final Turn!" if @final_round && !player.final_turn?
       Turn.new(player).main
       @final_round = true if player.final_turn?
       player.final_turn = true if @final_round
