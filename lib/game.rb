@@ -18,10 +18,6 @@ class Game
     step_3_game_over
   end
 
-  def players_in_the_game
-    @players.select { |player| player.in_the_game? }
-  end
-
   def final_round?
     @final_round
   end
@@ -53,16 +49,15 @@ class Game
 
   def step_2_turns
     @players.each do |player|
-      unless player.final_turn?
-        Turn.new(player).main
-        @final_round = true if player.final_turn?
-        player.final_turn = true if @final_round
-        @end_game = true if @players.all? { |player| player.final_turn? }
-        ans = ask("\nPress any key to continue or (n/q) to stop.")
-        if ['n', 'N', 'q', 'Q'].include?(ans)
-          @end_game = true
-          break
-        end
+      next if player.final_turn?
+      Turn.new(player).main
+      @final_round = true if player.final_turn?
+      player.final_turn = true if @final_round
+      @end_game = true if @players.all? { |player| player.final_turn? }
+      ans = ask("\nPress any key to continue or (n/q) to stop.")
+      if ['n', 'N', 'q', 'Q'].include?(ans)
+        @end_game = true
+        break
       end
     end
   end
@@ -72,9 +67,7 @@ class Game
     puts "GAME OVER!"
     puts "\nThe winner is Player #{highest_scorer.number}!"
     puts "\nEach player scored:"
-    @players.each do |player|
-      puts " - Player #{player.number}: #{player.points} points"
-    end
+    @players.each { |player| puts " - Player #{player.number}: #{player.points} points" }
     puts '=' * 80
   end
 end
