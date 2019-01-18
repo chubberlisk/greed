@@ -1,6 +1,6 @@
 require_relative '../lib/game'
-require_relative '../lib/player'
 require_relative '../lib/turn'
+require_relative '../lib/player'
 
 describe Game do
   it 'creates a game' do
@@ -48,9 +48,9 @@ describe Game do
 
       it 'moves onto the next player after a turn' do
         turn = instance_double('Turn')
-        allow(STDIN).to receive(:gets).and_return('3', 'y', 'y', 'y', 'n')
-        expect(Turn).to receive(:new).and_return(turn).at_least(4).times
-        expect(turn).to receive(:main).at_least(4).times
+        allow(STDIN).to receive(:gets).and_return('3', 'y', 'y', 'n')
+        expect(Turn).to receive(:new).and_return(turn).exactly(3).times
+        expect(turn).to receive(:main).exactly(3).times
         subject.main
       end
 
@@ -58,7 +58,7 @@ describe Game do
         turn = instance_double('Turn')
         allow(turn).to receive(:main)
         allow(Turn).to receive(:new).and_return(turn)
-        expect(STDIN).to receive(:gets).and_return('3', 'y', 'y', 'n').at_least(3).times
+        expect(STDIN).to receive(:gets).and_return('3', 'y', 'n').exactly(3).times
         subject.main
       end
 
@@ -66,7 +66,7 @@ describe Game do
         turn = instance_double('Turn')
         allow(STDIN).to receive(:gets).and_return('y', 'y', 'n')
         player = Player.new(1)
-        player.points = rand(3000..5000)
+        player.points = 3000
         subject.instance_variable_set(:@players, [player, Player.new(2), Player.new(3)])
         subject.instance_variable_set(:@final_round, true)
         subject.main
@@ -77,37 +77,15 @@ describe Game do
         turn = instance_double('Turn')
         allow(STDIN).to receive(:gets).and_return('y', 'n')
         player = Player.new(1)
-        player.points = rand(3000..5000)
-        subject.instance_variable_set(:@players, [player, Player.new(2), Player.new(3)])
-        expect(Turn).to receive(:new).and_return(turn).twice
+        player.points = 3000
+        players = [player, Player.new(2), Player.new(3)]
+        subject.instance_variable_set(:@players, players)
+        expect(Turn).not_to receive(:new).with(players[0])
+        expect(Turn).to receive(:new).with(players[1]).and_return(turn).once
+        expect(Turn).to receive(:new).with(players[2]).and_return(turn).once
         expect(turn).to receive(:main).twice
         subject.main
       end
-
-      # it 'sets @final_round to true when a player reaches 3000 or more points' do
-      #   turn = instance_double('Turn')
-      #   allow(STDIN).to receive(:gets).and_return('y')
-      #   allow(turn).to receive(:main)
-      #   allow(Turn).to receive(:new).and_return(turn)
-      #   player = Player.new(1)
-      #   player.points = rand(3000..5000)
-      #   subject.instance_variable_set(:@players, [player, Player.new(2), Player.new(3)])
-      #   subject.main
-      #   expect(subject.final_round?).to be_truthy
-      # end
-
-      # it 'sets @end_game to true when all players have had their final turn' do
-      #   turn = instance_double('Turn')
-      #   allow(STDIN).to receive(:gets).and_return('y')
-      #   allow(turn).to receive(:main)
-      #   allow(Turn).to receive(:new).and_return(turn)
-      #   players = []
-      #   3.times { |i| players.push(Player.new(i + 1)) }
-      #   players.each { |player| player.final_turn = true }
-      #   subject.instance_variable_set(:@players, players)
-      #   subject.main
-      #   expect(subject.end_game?).to be_truthy
-      # end
     end
   end
 
@@ -142,20 +120,6 @@ describe Game do
 
     it 'returns false when initialised' do
       expect(subject.end_game?).to be(false)
-    end
-  end
-
-  describe '#players_in_the_game' do
-    it 'returns an empty list when initialised' do
-      expect(subject.players_in_the_game).to eq([])
-    end
-
-    it 'returns an array of player objects that are in the game' do
-      player_in_the_game = Player.new(1)
-      player_in_the_game.instance_variable_set(:@in_the_game, player_in_the_game)
-      players = [player_in_the_game, Player.new(2), Player.new(3)]
-      subject.instance_variable_set(:@players, players)
-      expect(subject.players_in_the_game).to eq([player_in_the_game])
     end
   end
 
