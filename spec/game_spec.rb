@@ -125,11 +125,30 @@ describe Game do
 
   describe '#highest_scorer' do
     it 'returns the player with the largest amount of points' do
-      player = Player.new(2)
-      player.points = 1200
-      players = [Player.new(1), player, Player.new(3)]
-      subject.instance_variable_set(:@players, players)
-      expect(subject.highest_scorer).to eq(player)
+      player_1 = Player.new(1)
+      player_1.points = rand(1..100)
+      player_2 = Player.new(2)
+      player_2.points = rand(101..200)
+      player_3 = Player.new(3)
+      player_3.points = rand(201..300)
+      subject.instance_variable_set(:@players, [player_1, player_2, player_3])
+      expect(subject.highest_scorer).to eq(player_3)
+      player_1 = Player.new(1)
+      player_1.points = rand(1..100)
+      player_2 = Player.new(2)
+      player_2.points = rand(201..300)
+      player_3 = Player.new(3)
+      player_3.points = rand(101..200)
+      subject.instance_variable_set(:@players, [player_1, player_2, player_3])
+      expect(subject.highest_scorer).to eq(player_2)
+      player_1 = Player.new(1)
+      player_1.points = rand(201..300)
+      player_2 = Player.new(2)
+      player_2.points = rand(1..100)
+      player_3 = Player.new(3)
+      player_3.points = rand(101..200)
+      subject.instance_variable_set(:@players, [player_1, player_2, player_3])
+      expect(subject.highest_scorer).to eq(player_1)
     end
   end
 end
