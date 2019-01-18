@@ -48,10 +48,7 @@ class Turn
 
   def add_accumulated_score_to_player_points
     @player.points += @accumulated_score
-    unless @player.in_the_game?
-      @player.in_the_game = true
-      puts "\nYou are now in the game!"
-    end
+    puts "\nYou are now in the game!" unless @player.in_the_game?
     puts "\nAdding your accumulated score to your points."
     puts "You now have #{@player.points} points!"
   end
